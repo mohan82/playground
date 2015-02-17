@@ -12,7 +12,6 @@ import com.google.common.base.Objects;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -21,9 +20,8 @@ public class HelloWorldController {
 
     @RequestMapping(value = "/world")
     @ResponseBody
-    public String hello() throws Exception {
-        return "hello";
-        // return  new Hello("Hello World","hw");
+    public Hello hello() throws Exception {
+      return  new Hello("Hello World","hw");
     }
 
     public static class Hello implements Serializable {
