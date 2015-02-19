@@ -8,8 +8,8 @@
   ~ http://www.apache.org/licenses/LICENSE-2.0
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.test</groupId>
@@ -19,11 +19,13 @@
     <properties>
         <guava.version>14.0.1</guava.version>
         <jackson.version>2.4.0</jackson.version>
+        <spring.oauth.version>2.0.6.RELEASE</spring.oauth.version>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>${spring.oauth.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -70,7 +72,7 @@
                 <version>9.2.7.v20150116</version>
                 <configuration>
                     <httpConnector>
-                        <port>8080</port>
+                        <port>8081</port>
                     </httpConnector>
                     <webApp>
                         <contextPath>/resource-server</contextPath>

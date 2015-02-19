@@ -33,10 +33,11 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user").password("password").roles("USER");
     }
 
+
     /**
      * Spring does expose default authentication manager for some
-     * reason we have to expose ourself
-     * @return
+     * reason we have to expose ourselves
+     * @return super auth manager
      * @throws Exception
      */
     @Bean(name = "authenticationManager")
@@ -59,7 +60,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(final AuthorizationServerSecurityConfigurer security) throws Exception {
-            super.configure(security);
+            security.checkTokenAccess("permitAll()");
         }
 
         @Override

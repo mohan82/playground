@@ -9,30 +9,28 @@
 
 package org.test.controller;
 
-import java.io.Serializable;
-
 import com.google.common.base.Objects;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.Serializable;
+
 @Controller
-@RequestMapping("/hello")
 public class HelloWorldController {
 
-    @RequestMapping(value = "/world")
+    @RequestMapping(value = "/hello")
     @ResponseBody
-    public Hello hello() throws Exception {
-      return  new Hello("Hello World","hw");
+    public Text hello() throws Exception {
+        return new Text("Text World", "hw");
     }
 
-    public static class Hello implements Serializable {
+    public static class Text implements Serializable {
 
         private String text;
         private String code;
 
-        public Hello(final String text, final String code) {
+        public Text(final String text, final String code) {
             this.text = text;
             this.code = code;
         }
@@ -66,7 +64,7 @@ public class HelloWorldController {
             if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            final Hello other = (Hello) obj;
+            final Text other = (Text) obj;
             return Objects.equal(this.text, other.text)
                     && Objects.equal(this.code, other.code);
         }
