@@ -25,7 +25,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @EnableWebMvc
 @EnableWebSecurity
-public class WebConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -33,10 +34,10 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user").password("password").roles("USER");
     }
 
-
     /**
      * Spring does expose default authentication manager for some
      * reason we have to expose ourselves
+     *
      * @return super auth manager
      * @throws Exception
      */
@@ -45,33 +46,4 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    @Configuration
-    @EnableAuthorizationServer
-    public static class OAuthConfig extends AuthorizationServerConfigurerAdapter {
-
-
-
-        private AuthenticationManager authenticationManager;
-        @Autowired
-        public  void init(AuthenticationManager authenticationManager){
-
-             this.authenticationManager =authenticationManager;
-        }
-
-        @Override
-        public void configure(final AuthorizationServerSecurityConfigurer security) throws Exception {
-            security.checkTokenAccess("permitAll()");
-        }
-
-        @Override
-        public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
-            clients.inMemory().withClient("test").secret("secret")
-                    .authorizedGrantTypes("password").scopes("read","write");
-        }
-
-        @Override
-        public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.authenticationManager(authenticationManager);
-        }
-    }
 }
