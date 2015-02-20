@@ -1,7 +1,7 @@
 {
   "name": "springaouth-angular",
   "description": "Spring OAuth Angular Implementation",
-  "version": "1.0",
+  "version": "1.0.0",
   "private": true,
   "keywords": [
     "spring-oauth2"
