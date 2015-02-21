@@ -1,7 +1,7 @@
 {
   "name": "springaouth-angular",
   "description": "Spring OAuth Angular Implementation",
-  "version": "1.0",
+  "version": "1.0.0",
   "private": true,
   "keywords": [
     "spring-oauth2"
@@ -17,7 +17,11 @@
     "karma-junit-reporter": "0.2.2",
     "karma-ng-html2js-preprocessor": "0.1.0",
     "karma-cli": "0.0.4",
-    "karma-chrome-launcher": "0.1.5"
+    "karma-chrome-launcher": "0.1.5",
+    "http-server": "0.7.4"
+  },
+  "scripts": {
+    "prestart": "npm install",
+    "start": "http-server src/main/app -a localhost -p 9001"
   }
-
 }
