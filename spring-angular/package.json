@@ -22,6 +22,6 @@
   },
   "scripts": {
     "prestart": "npm install",
-    "start": "http-server src/main/app -a localhost -p 9001"
+    "start": "http-server app -a localhost -p 9001"
   }
 }

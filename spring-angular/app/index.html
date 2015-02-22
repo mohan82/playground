@@ -24,7 +24,9 @@
     <link rel="stylesheet" href="styles/voffset.css"/>
 </head>
 <body>
-<nav class="navbar navbar-default" role="navigation" ng-include src="'partials/navbar.html'"></nav>
+<nav class="navbar navbar-default" role="navigation">
+    <div ng-include src="'partials/navbar.html'"></div>
+</nav>
 <div class="container-fluid">
     <div class="row">
         <div ng-view=""></div>
@@ -44,6 +46,8 @@
 <script src="bower_components/respond/dest/respond.min.js"></script>
 <![endif]-->
 <!--- Application JS -->
-<script src="js/oauth.js"></script>
+<script src="js/authprovider.js"></script>
+<script src="js/oauthapp.js"></script>
+
 <!--End Application JS -->
 </html>

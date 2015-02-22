@@ -7,8 +7,8 @@
   ~ http://www.apache.org/licenses/LICENSE-2.0
   -->
 
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
             http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
@@ -33,6 +33,43 @@
     </context-param>
     <!-- End Listener Configuration -->
 
+    <filter>
+        <filter-name>cross-origin</filter-name>
+        <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter
+        </filter-class>
+        <init-param>
+            <param-name>allowedOrigins</param-name>
+            <param-value>*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>allowedMethods</param-name>
+            <param-value>GET,POST,OPTIONS,DELETE,PUT,HEAD</param-value>
+        </init-param>
+        <init-param>
+            <param-name>allowedHeaders</param-name>
+            <param-value>
+                origin, content-type, accept, authorization,
+                x-requested-with
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>supportsCredentials</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>cross-origin</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>preflight</filter-name>
+        <filter-class>org.test.config.PreflightRequestFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>preflight</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- Spring Security -->
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -53,7 +90,7 @@
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>
-               org.test.config
+                org.test.config
             </param-value>
         </init-param>
         <init-param>
@@ -65,4 +102,6 @@
         <servlet-name>mvc-dispatcher</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
+
 </web-app>
