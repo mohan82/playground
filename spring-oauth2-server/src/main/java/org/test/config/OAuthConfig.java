@@ -1,8 +1,10 @@
 /*
- * Copyright: Copyright (c) 2015
- * Company: The Roads and Traffic Authority, New South Wales
- * Last Modified By: $Author: $
- * Version: $Id: $
+ * Copyright (c) 2015.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 package org.test.config;
 
@@ -34,8 +36,10 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory().withClient("test").secret("secret")
-                .authorizedGrantTypes("password").scopes("read", "write");
+        clients.inMemory().withClient("test").
+                accessTokenValiditySeconds(30)
+                .refreshTokenValiditySeconds(50)
+                .authorizedGrantTypes("password", "refresh_token").scopes("read", "write");
     }
 
     @Override

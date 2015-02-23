@@ -24,7 +24,7 @@ Start authorization server following auth server instructions and
 get the bearer the token ,
 <pre>
 <code>
-curl -u test:secret "http://localhost:8080/oauth-server/oauth/token?grant_type=password&username=user&password=password" -X POST
+curl "http://test@localhost:8080/oauth-server/oauth/token?grant_type=password&username=user&password=password" -X POST
 </code>
 </pre>
 Response
@@ -32,12 +32,12 @@ Response
 <pre>
 <code>
 {
-  "access_token": "9a71eb75-a3df-4ab4-ad1b-94d7af3cb8a9",
+  "access_token": "ebf80390-3ef3-46c4-a43c-a41f650bce87",
   "token_type": "bearer",
-  "expires_in": 43188,
+  "refresh_token": "59ba69a0-675b-48f8-86e4-bddb8363928d",
+  "expires_in": 29,
   "scope": "read write"
 }
-
 </code>
 </pre>
 
