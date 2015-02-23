@@ -1,0 +1,119 @@
+/*
+ * Copyright (c) 2015. 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+/*Boot Strap 3 does not provide vertical offsets  use this until they provide one*/
+.voffset-top {
+    margin-top: 2px;
+}
+
+.voffset-top-1 {
+    margin-top: 5px;
+}
+
+.voffset-top-2 {
+    margin-top: 10px;
+}
+
+.voffset-top-3 {
+    margin-top: 15px;
+}
+
+.voffset-top-4 {
+    margin-top: 30px;
+}
+
+.voffset-top-5 {
+    margin-top: 40px;
+}
+
+.voffset-top-6 {
+    margin-top: 60px;
+}
+
+.voffset-top-7 {
+    margin-top: 80px;
+}
+
+.voffset-top-8 {
+    margin-top: 100px;
+}
+
+.voffset-top-9 {
+    margin-top: 150px;
+}
+
+.voffset-top-10 {
+    margin-top: 200px;
+}
+
+.voffset-top-11 {
+    margin-top: 250px;
+}
+
+.voffset-top-12 {
+    margin-top: 300px;
+}
+
+.voffset-bottom {
+    margin-bottom: 2px;
+}
+
+.voffset-bottom-1 {
+    margin-bottom: 5px;
+}
+
+.voffset-bottom-2 {
+    margin-bottom: 10px;
+}
+
+.voffset-bottom-3 {
+    margin-bottom: 15px;
+}
+
+.voffset-bottom-4 {
+    margin-bottom: 30px;
+}
+
+.voffset-bottom-5 {
+    margin-bottom: 40px;
+}
+
+.voffset-bottom-6 {
+    margin-bottom: 60px;
+}
+
+.voffset-bottom-7 {
+    margin-bottom: 80px;
+}
+
+.voffset-bottom-8 {
+    margin-bottom: 100px;
+}
+
+.voffset-bottom-9 {
+    margin-bottom: 150px;
+}
+
+.voffset-bottom-10 {
+    margin-bottom: 200px;
+}
+
+.voffset-bottom-11 {
+    margin-bottom: 250px;
+}
+
+.voffset-bottom-12 {
+    margin-bottom: 300px;
+}
+
+
+
+
+
+
