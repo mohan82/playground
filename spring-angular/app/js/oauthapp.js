@@ -6,99 +6,170 @@
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-"use strict";
 
-var oauthApp = angular.module("OAuthApp", ["ngRoute", "OAuth2Provider"]);
-console.log("Initialising");
-oauthApp.constant("APP_CONST", {
-    PARTIALS_DIR: "partials/",
-    OAUTH_SERVER: "http://localhost:8080/oauth-server",
-    RESOURCE_SERVER: "http:/localhost:8081/resource-server",
-    AUTHENTICATION_ENDPOINT: "/oauth/token",
-    GRANT_TYPE_URL: "grant_type=password",
-    CLIENT_ID: "test"
-});
+(function () {
+    "use strict";
 
-oauthApp.config(["$routeProvider", "$httpProvider", "APP_CONST", function ($routeProvider, $httpProvider, APP_CONST) {
-    $routeProvider.when("/", {
-        templateUrl: APP_CONST.PARTIALS_DIR + "login.html",
-        controller: "loginController"
-
-    }).when("/home", {
-        templateUrl: APP_CONST.PARTIALS_DIR + "home.html",
-        controller: "homeController"
-
-    }).otherwise({
-        redirectTo: "/"
-
+    var oauthApp = angular.module("OAuthApp", ["ngRoute", "OAuth2Provider"]);
+    console.log("Initialising");
+    oauthApp.constant("APP_CONST", {
+        PARTIALS_DIR: "partials/",
+        OAUTH_SERVER: "http://localhost:8080/oauth-server",
+        RESOURCE_SERVER: "http://localhost:8081/resource-server",
+        TOKEN_URL: "/oauth/token",
+        PASSWORD_GRANT_TYPE: "grant_type=password",
+        REFRESH_GRANT_TYPE: "grant_type=refresh_token",
+        CLIENT_ID: "test"
     });
 
+    oauthApp.config(["$routeProvider", "$httpProvider", "APP_CONST", function ($routeProvider, $httpProvider, APP_CONST) {
+        $routeProvider.when("/", {
+            templateUrl: APP_CONST.PARTIALS_DIR + "login.html",
+            controller: "loginController"
 
-}]);
+        }).when("/home", {
+            templateUrl: APP_CONST.PARTIALS_DIR + "home.html",
+            controller: "homeController"
 
-oauthApp.controller("loginController", ["$scope", "loginService",
-    "OAUTH_CONSTANT", "$log", function ($scope, loginService, OAUTH_CONSTANT, $log) {
-        $log.log("Initialising Login Controller" + OAUTH_CONSTANT.OAUTH_SERVER);
-        $log.log("Auth info is " + $scope.user.oauthInfo.isLoggedIn + $scope.user.oauthInfo.accessToken + $scope.user.oauthInfo.refreshToken);
-        $scope.message = "Login";
-        $scope.username = "";
-        $scope.password = "";
-        $scope.login = function () {
+        }).otherwise({
+            redirectTo: "/"
 
-            loginService.login($scope.username, $scope.password);
-        };
+        });
+
 
     }]);
 
+    oauthApp.controller("loginController", ["$scope", "loginService",
+        "OAUTH_CONSTANT", "$log", "$location", function ($scope, loginService, OAUTH_CONSTANT, $log, $location) {
+            $scope.message = "Login";
+            $scope.username = "";
+            $scope.password = "";
+            $scope.login = function () {
+                var loginPromise = loginService.login($scope.username, $scope.password);
+                loginPromise.then(function (response) {
+                    $log.log("Controller AccessToken:%s", response.accessToken);
+                    $scope.$emit(OAUTH_CONSTANT.EVENTS.LOGIN_CONFIRMED, response);
+                    $location.path("/home");
+                }, function (error) {
 
-oauthApp.service("loginService", ["$http", "$log", "APP_CONST", "$location", function ($http, $log, APP_CONST, $location) {
-    var self = this;
-    //TODO:window.btoa is not supported in IE 9
-    var BASIC_HEADER_VALUE = window.btoa(APP_CONST.CLIENT_ID + ":" + "");
+                    $log.log("Error :%s reason :%s, http status :%s", error.data.error, error.data.error_description, error.status);
+                });
+            };
 
-    this.login = function (username, password) {
-        var url = this.buildAuthUrl(username, password);
+        }]);
 
-        $log.log("Login Url :%s" + url);
-        var encodedBasic = this.getBaseAuthenticationHeader();
-        var req = {
-            method: 'POST',
-            url: url,
-            headers: encodedBasic
-        };
-        $http(req).success(function (data, status, headers, config) {
-            $log.log("Success :%s ,status :%s", data, status);
-            $location.path("/home");
-
-
-        }).error(function (data, status) {
-
-            $log.log("Error :%s ,status :%s", data, status);
-        });
-
-    };
-
-    this.getBaseAuthenticationHeader = function () {
-        return {
-            'Authorization': 'Basic ' + BASIC_HEADER_VALUE
-
+    oauthApp.service('encodeService', function () {
+        /* global window,base64 */
+        this.encodeData = function (data) {
+            if (window.btoa) {
+                return window.btoa(data);
+            }
+            else {
+                return base64.encode(data);
+            }
         };
 
-    };
+    });
 
-    this.buildAuthUrl = function (username, password) {
+    oauthApp.service("loginService", ["$http", "$q", "$log", "APP_CONST", "encodeService",
+        function ($http, $q, $log, APP_CONST, encodeService) {
+            var self = this;
 
-        return APP_CONST.OAUTH_SERVER + APP_CONST.AUTHENTICATION_ENDPOINT + "?" +
-            APP_CONST.GRANT_TYPE_URL +
-            "&" + "username=" + username + "&" + "password=" + password;
+            this.login = function (username, password) {
+                var url = this.buildAuthUrl(username, password);
+                $log.log("Login Url :%s" + url);
+                var encodedBasic = this.getBaseAuthenticationHeader();
+                var req = {
+                    method: 'POST',
+                    url: url,
+                    headers: encodedBasic
+                };
+                var deferred = $q.defer();
+                $http(req).success(function (data) {
+                    $log.log("Service AccessToken:%s", data.access_token);
+                    var result = {
+                        "accessToken": data.access_token,
+                        "refreshToken": data.refresh_token,
+                        "expires": data.expires_in,
+                        "scope": data.scope
+                    };
+                    deferred.resolve(result);
+                }).error(function (data, status) {
+                    var errorObj = {
+                        data: data,
+                        status: status
+                    };
+                    deferred.reject(errorObj);
+                });
 
-    };
+                return deferred.promise;
 
-}]);
+            };
+
+            this.getBaseAuthenticationHeader = function () {
+                var BASIC_HEADER_VALUE = encodeService.encodeData(APP_CONST.CLIENT_ID + ":" + "");
+                return {
+                    'Authorization': 'Basic ' + BASIC_HEADER_VALUE
+
+                };
+
+            };
+
+            this.buildAuthUrl = function (username, password) {
+
+                return APP_CONST.OAUTH_SERVER + APP_CONST.TOKEN_URL + "?" +
+                    APP_CONST.PASSWORD_GRANT_TYPE +
+                    "&" + "username=" + username + "&" + "password=" + password;
+
+            };
+
+        }]);
 
 
-oauthApp.controller("homeController", ["$scope", "$log", function ($scope, $log) {
-    $log.log("Initialising Home Controller");
-    $scope.message = "Home";
+    oauthApp.controller("homeController", ["$scope", "$log", "helloService", function ($scope, $log, helloService) {
+        $log.log("Initialising Home Controller");
+        $scope.message = "Home";
+        $scope.getHello = function () {
 
-}]);
+            helloService.getHello().then(function (response) {
+                $log.log(response);
+                $scope.hello = response.data;
+            }, function (error) {
+                $log.log(error);
+                $log.log("Error :%s reason :%s, http status :%s", error);
+
+            });
+
+        };
+        $scope.getHello();
+
+    }]);
+
+    oauthApp.service('helloService', ["$http", "$log", "APP_CONST", "encodeService", "authInfoService",
+        function ($http, $log, APP_CONST, encodeService, authInfoService) {
+            var self = this;
+
+            this.getHello = function () {
+                var req = {
+                    method: 'POST',
+                    url: self._buildHelloUrl(),
+                    headers: self.getBearerHeader()
+                };
+
+                return $http(req);
+            };
+            this._buildHelloUrl = function () {
+                return APP_CONST.RESOURCE_SERVER + "/hello";
+            };
+            this.getBearerHeader = function () {
+
+                var encodedToken = authInfoService.getAuthInfo().accessToken;
+                $log.log("Encoded Token %s", encodedToken);
+                return {
+                    'Authorization': 'Bearer ' + encodedToken
+
+                };
+            };
+        }
+    ]);
+})();

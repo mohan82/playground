@@ -38,7 +38,8 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(final ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory().withClient("test").
                 accessTokenValiditySeconds(30)
-                .refreshTokenValiditySeconds(50)
+                        //30 minutes
+                .refreshTokenValiditySeconds(60 * 30)
                 .authorizedGrantTypes("password", "refresh_token").scopes("read", "write");
     }
 
