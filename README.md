@@ -1,4 +1,5 @@
-playground
+Spring OAuth2 
 ==========
 
-This repository holds all the code which I play with to experiment,learn or hack
+Spring OAuth2 Angular Implementation 
+TODO :Document Architecture
