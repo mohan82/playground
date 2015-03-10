@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2015.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@
 
         }]);
 
-    oauthApp.service('encodeService', function () {
+    oauthApp.service("encodeService", function () {
         /* global window,base64 */
         this.encodeData = function (data) {
             if (window.btoa) {
@@ -80,7 +80,7 @@
                 $log.log("Login Url :%s" + url);
                 var encodedBasic = this.getBaseAuthenticationHeader();
                 var req = {
-                    method: 'POST',
+                    method: "POST",
                     url: url,
                     headers: encodedBasic
                 };
@@ -109,7 +109,7 @@
             this.getBaseAuthenticationHeader = function () {
                 var BASIC_HEADER_VALUE = encodeService.encodeData(APP_CONST.CLIENT_ID + ":" + "");
                 return {
-                    'Authorization': 'Basic ' + BASIC_HEADER_VALUE
+                    "Authorization": "Basic " + BASIC_HEADER_VALUE
 
                 };
 
@@ -145,30 +145,20 @@
 
     }]);
 
-    oauthApp.service('helloService', ["$http", "$log", "APP_CONST", "encodeService", "authInfoService",
+    oauthApp.service("helloService", ["$http", "$log", "APP_CONST", "encodeService", "authInfoService",
         function ($http, $log, APP_CONST, encodeService, authInfoService) {
             var self = this;
 
             this.getHello = function () {
                 var req = {
-                    method: 'POST',
-                    url: self._buildHelloUrl(),
-                    headers: self.getBearerHeader()
+                    method: "POST",
+                    url: self._buildHelloUrl()
                 };
 
                 return $http(req);
             };
             this._buildHelloUrl = function () {
                 return APP_CONST.RESOURCE_SERVER + "/hello";
-            };
-            this.getBearerHeader = function () {
-
-                var encodedToken = authInfoService.getAuthInfo().accessToken;
-                $log.log("Encoded Token %s", encodedToken);
-                return {
-                    'Authorization': 'Bearer ' + encodedToken
-
-                };
             };
         }
     ]);
