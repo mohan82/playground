@@ -73,7 +73,6 @@
 
     oauthApp.service("loginService", ["$http", "$q", "$log", "APP_CONST", "encodeService",
         function ($http, $q, $log, APP_CONST, encodeService) {
-            var self = this;
 
             this.login = function (username, password) {
                 var url = this.buildAuthUrl(username, password);
@@ -146,7 +145,7 @@
     }]);
 
     oauthApp.service("helloService", ["$http", "$log", "APP_CONST", "encodeService", "authInfoService",
-        function ($http, $log, APP_CONST, encodeService, authInfoService) {
+        function ($http, $log, APP_CONST) {
             var self = this;
 
             this.getHello = function () {

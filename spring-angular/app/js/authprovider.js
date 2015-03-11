@@ -10,11 +10,8 @@
     "use strict";
 
     var authProvider = angular.module('OAuth2Provider', []);
-    /****
-     *  Our implementation will use $rootScope to store
-     *  client auth info and use events to interact
-     *  with  client modules
-     */
+
+
     authProvider.constant('OAUTH_CONSTANT', {
         "EVENTS": {
             "LOGIN_CONFIRMED": "event:oauth:login-confirmed"
@@ -60,7 +57,7 @@
         this.request = function (config) {
 
             if (authInfoService.hasAccessToken()) {
-                config.headers['Authorization'] = 'Bearer ' + authInfoService.getAuthInfo().accessToken;
+                config.headers.Authorization = 'Bearer ' + authInfoService.getAuthInfo().accessToken;
             }
 
             return config;
@@ -115,6 +112,6 @@
         $httpProvider.interceptors.push("bearerTokenInterceptor");
         $httpProvider.interceptors.push("refreshTokenInterceptor");
 
-    }])
+    }]);
 
 })();
