@@ -10,8 +10,11 @@
     "use strict";
 
     var authProvider = angular.module('OAuth2Provider', []);
-
-
+    /****
+     *  Our implementation will use ng-storage to store
+     *  client auth info and use events to interact
+     *  with  client modules
+     */
     authProvider.constant('OAUTH_CONSTANT', {
         "EVENTS": {
             "LOGIN_CONFIRMED": "event:oauth:login-confirmed"
@@ -53,11 +56,86 @@
         return this;
     });
 
+    authProvider.service("encodeService", function () {
+        /* global window,base64 */
+        this.encodeData = function (data) {
+            if (window.btoa) {
+                return window.btoa(data);
+            }
+            else {
+                return base64.encode(data);
+            }
+        };
+
+        this.decodeData = function (data) {
+            if (window.atob) {
+                return window.atob(data);
+            } else {
+                return base64.decode(data);
+            }
+        };
+
+    });
+
+
+    authProvider.service("loginService", ["$http", "$q", "$log", "encodeService",
+        function ($http, $q, $log, encodeService) {
+
+            this.login = function (username, password, urlInfo) {
+                var url = this.buildAuthUrl(username, password, urlInfo);
+                $log.log("Login Url :%s" + url);
+                var encodedBasic = this.getBaseAuthenticationHeader(urlInfo);
+                var req = {
+                    method: "POST",
+                    url: url,
+                    headers: encodedBasic
+                };
+                var deferred = $q.defer();
+                $http(req).success(function (data) {
+                    $log.log("Service AccessToken:%s", data.access_token);
+                    var result = {
+                        "accessToken": data.access_token,
+                        "refreshToken": data.refresh_token,
+                        "expires": data.expires_in,
+                        "scope": data.scope
+                    };
+                    deferred.resolve(result);
+                }).error(function (data, status) {
+                    var errorObj = {
+                        data: data,
+                        status: status
+                    };
+                    deferred.reject(errorObj);
+                });
+
+                return deferred.promise;
+
+            };
+
+            this.getBaseAuthenticationHeader = function (urlInfo) {
+                var BASIC_HEADER_VALUE = encodeService.encodeData(urlInfo.CLIENT_ID + ":" + "");
+                return {
+                    "Authorization": "Basic " + BASIC_HEADER_VALUE
+
+                };
+
+            };
+
+            this.buildAuthUrl = function (username, password, urlInfo) {
+
+                return urlInfo.OAUTH_SERVER + urlInfo.TOKEN_URL + "?" +
+                    urlInfo.PASSWORD_GRANT_TYPE +
+                    "&" + "username=" + username + "&" + "password=" + password;
+
+            };
+
+        }]);
+
     authProvider.factory("bearerTokenInterceptor", ["authInfoService", function (authInfoService) {
         this.request = function (config) {
 
             if (authInfoService.hasAccessToken()) {
-                config.headers.Authorization = 'Bearer ' + authInfoService.getAuthInfo().accessToken;
+                config.headers['Authorization'] = 'Bearer ' + authInfoService.getAuthInfo().accessToken;
             }
 
             return config;
@@ -76,8 +154,8 @@
             OAUTH_UNAUTHORIZED_CODE = "unauthorized";
 
         this.isTokenRefreshable = function (status, data) {
-             return (authInfoService.hasRefreshToken() &&
-                     status === HTTP_UNAUTHORIZED && data.error===OAUTH_UNAUTHORIZED_CODE);
+            return (authInfoService.hasRefreshToken() &&
+            status === HTTP_UNAUTHORIZED && data.error === OAUTH_UNAUTHORIZED_CODE);
         };
 
         this.responseError = function (rejection) {
@@ -112,6 +190,6 @@
         $httpProvider.interceptors.push("bearerTokenInterceptor");
         $httpProvider.interceptors.push("refreshTokenInterceptor");
 
-    }]);
+    }])
 
 })();
