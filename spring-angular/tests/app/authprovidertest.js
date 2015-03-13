@@ -10,6 +10,8 @@
 /**
  * Created by mohana on 10/03/2015.
  */
+"use strict";
+
 describe("Test OAuth2Provider Module", function () {
     var $httpProvider;
     beforeEach(module("OAuth2Provider", function (_$httpProvider_) {
@@ -53,7 +55,7 @@ describe("Test OAuth2Provider Module", function () {
             authInfoService = _authInfoService_;
             bearerTokenInterceptor = _bearerTokenInterceptor_;
             $httpBackend = _$httpBackend_;
-            $http = _$http_
+            $http = _$http_;
 
         }));
 
@@ -84,13 +86,13 @@ describe("Test OAuth2Provider Module", function () {
             setUpToken();
             var config = {headers: {}};
             bearerTokenInterceptor.request(config);
-            expect(config.headers["Authorization"]).toContain(TEST_TOKEN);
+            expect(config.headers.Authorization).toContain(TEST_TOKEN);
         });
 
         it("given no accessToken bearerTokenInterceptor should not set token header", function () {
             var config = {headers: {}};
             bearerTokenInterceptor.request(config);
-            expect(config.headers["Authorization"]).toBeUndefined();
+            expect(config.headers.Authorization).toBeUndefined();
         });
         it("given no header with access token bearerTokenInterceptor should throw", function () {
             setUpToken();
@@ -104,8 +106,8 @@ describe("Test OAuth2Provider Module", function () {
             $httpBackend.whenGET(TEST_URL).respond(200, "OK");
             $http.get(TEST_URL).success(function (data, status, headers, config) {
                 expect(config.headers).toBeDefined();
-                expect(config.headers["Authorization"]).toBeDefined();
-                expect(config.headers["Authorization"]).toContain(TEST_TOKEN);
+                expect(config.headers.Authorization).toBeDefined();
+                expect(config.headers.Authorization).toContain(TEST_TOKEN);
 
             });
             $httpBackend.flush();

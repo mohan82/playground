@@ -135,7 +135,7 @@
         this.request = function (config) {
 
             if (authInfoService.hasAccessToken()) {
-                config.headers['Authorization'] = 'Bearer ' + authInfoService.getAuthInfo().accessToken;
+                config.headers.Authorization = 'Bearer ' + authInfoService.getAuthInfo().accessToken;
             }
 
             return config;
@@ -190,6 +190,6 @@
         $httpProvider.interceptors.push("bearerTokenInterceptor");
         $httpProvider.interceptors.push("refreshTokenInterceptor");
 
-    }])
+    }]);
 
 })();

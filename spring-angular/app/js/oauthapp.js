@@ -80,7 +80,7 @@
     }]);
 
     oauthApp.service("helloService", ["$http", "$log", "APP_CONST", "encodeService", "authInfoService",
-        function ($http, $log, APP_CONST, encodeService, authInfoService) {
+        function ($http, $log, APP_CONST) {
             var self = this;
 
             this.getHello = function () {
