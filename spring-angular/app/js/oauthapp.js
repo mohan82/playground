@@ -40,12 +40,12 @@
     }]);
 
     oauthApp.controller("loginController", ["$scope", "loginService", "APP_CONST",
-        "OAUTH_CONSTANT", "$log", "$location", function ($scope, loginService,APP_CONST,OAUTH_CONSTANT, $log, $location) {
+        "OAUTH_CONSTANT", "$log", "$location", function ($scope, loginService, APP_CONST, OAUTH_CONSTANT, $log, $location) {
             $scope.message = "Login";
             $scope.username = "";
             $scope.password = "";
             $scope.login = function () {
-                var loginPromise = loginService.login($scope.username, $scope.password,APP_CONST);
+                var loginPromise = loginService.login($scope.username, $scope.password, APP_CONST);
                 loginPromise.then(function (response) {
                     $log.log("Controller AccessToken:%s", response.accessToken);
                     $scope.$emit(OAUTH_CONSTANT.EVENTS.LOGIN_CONFIRMED, response);
