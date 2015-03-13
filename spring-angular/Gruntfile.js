@@ -8,29 +8,70 @@
  */
 
 "use strict";
-var fs = require("fs");
 
 module.exports = function (grunt) {
-    grunt.initConfig({
-        jshint: {
+
+    var SOURCE_DIR = ['app/js/**/*.js'];
+    var TEST_DIR = ['tests/**/*.js', '!tests/karma.conf.js'];
+    /*global require */
+    require('load-grunt-tasks')(grunt);
+
+
+    /**
+     * Scannable folders for linting
+     * @returns {*[]}
+     */
+    function lintableFolders() {
+        return ['Gruntfile.js', SOURCE_DIR, TEST_DIR, '!app/js/lib/**/*.js'];
+
+    }
+
+    function jshint() {
+        return {
             options: {
                 "jshintrc": ".jshintrc"
             },
             files: {
-                src: ['Gruntfile.js', 'app/js/**/*.js', 'tests/**/*.js',
-                    //ignored  lib and karma conf
-                    '!app/js/lib/**/*.js', '!tests/karma.conf.js']
+                src: lintableFolders()
             }
+        };
+    }
+
+    function concat() {
+        return {
+            build: {
+                src: SOURCE_DIR,
+                dest: "build/<%=pkg.name %>.js"
+            }
+        };
+    }
+
+    function uglify() {
+        return {
+            compress: {
+                src: "<%=concat.build.dest%>",
+                dest: "build/<%=pkg.name %>.min.js",
+                drop_console: true
+            },
+            options: {
+                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+                sourceMap: true,
+                sourceMapName: "build/<%pkg.name %>.sourcemap.map",
+                mangle: true
+            }
+
+        };
+    }
+
+
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
+        jshint: jshint(),
+        concat: concat(),
+        uglify: uglify(),
+        watch: {
+            files: lintableFolders(),
+            tasks: ["jshint", "concat", "uglify"]
         }
     });
-    grunt.registerTask("default", function () {
-        var message = 'Deployment on ' + new Date();
-        fs.appendFileSync('deploy.log', message + '\n');
-        grunt.log.writeln('Appended "' + message + '"');
-    });
-    grunt.registerMultiTask("dumpfile", function () {
-
-    });
-
-    grunt.loadNpmTasks("grunt-contrib-jshint");
 };
