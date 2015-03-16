@@ -38,7 +38,7 @@ describe("Test OAuth2Provider Module", function () {
         it("expect hasToken to be Falsy when not set", function () {
             var authInfo = {};
             authInfo.accessToken = "TEST TOKEN";
-            authInfoService.setAuthInfo(authInfo);
+            authInfoService.configure(authInfo);
             expect(authInfoService.hasAccessToken()).toBeTruthy();
         });
     });
@@ -78,7 +78,7 @@ describe("Test OAuth2Provider Module", function () {
         function setUpToken() {
             var authInfo = {};
             authInfo.accessToken = "TEST_TOKEN";
-            authInfoService.setAuthInfo(authInfo);
+            authInfoService.configure(authInfo);
         }
 
 
@@ -127,7 +127,7 @@ describe("Test OAuth2Provider Module", function () {
         function setUpRefreshToken() {
             var authInfo = {};
             authInfo.refreshToken = "TEST_TOKEN";
-            authInfoService.setAuthInfo(authInfo);
+            authInfoService.configure(authInfo);
         }
 
         function setUpErrorMsg(){

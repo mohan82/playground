@@ -1,4 +1,4 @@
-    /*
+/*
  * Copyright (c) 2015.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,27 +59,50 @@
         }]);
 
 
+    oauthApp.controller("homeController", ["$scope", "$log", "$interval", "helloService", "refreshTokenService", "authInfoService", "APP_CONST",
+        function ($scope, $log, $interval, helloService, refreshTokenService, authInfoService, APP_CONST) {
+            $log.log("Initialising Home Controller");
+            $scope.message = "Home";
+            var i = 0;
+            $scope.getHello = function () {
 
-    oauthApp.controller("homeController", ["$scope", "$log", "helloService", function ($scope, $log, helloService) {
-        $log.log("Initialising Home Controller");
-        $scope.message = "Home";
-        $scope.getHello = function () {
+                helloService.getHello().then(function (response) {
+                    $log.log(response);
+                    response.data.code = response.data.code + "Refresh :" + i;
+                    $scope.hello = response.data;
+                    i++;
+                }, function (error) {
+                    $log.log(error);
+                    $log.log("Error :%s reason :%s, http status :%s", error);
 
-            helloService.getHello().then(function (response) {
-                $log.log(response);
-                $scope.hello = response.data;
-            }, function (error) {
-                $log.log(error);
-                $log.log("Error :%s reason :%s, http status :%s", error);
+                });
 
-            });
+            };
+            function refresh() {
+                console.log("Trying to refresh token after 30 seconds");
+                authInfoService.expireToken();
+                refreshTokenService.refreshToken(authInfoService.getAuthInfo().refreshToken, APP_CONST).then(function (authInfo) {
+                    authInfoService.refresh(authInfo.accessToken, authInfo.expires);
+                    $scope.getHello();
+                }, function (error) {
+                    console.error(error);
 
-        };
-        $scope.getHello();
+                });
 
-    }]);
+            }
 
-    oauthApp.service("helloService", ["$http", "$log", "APP_CONST", "encodeService", "authInfoService",
+            $scope.refreshHello = function () {
+
+                if (authInfoService.hasRefreshToken()) {
+                    console.log("Will try in 30 seconds");
+                    $interval(refresh, 3 * 1000, 1);
+                }
+            };
+            $scope.getHello();
+
+        }]);
+
+    oauthApp.service("helloService", ["$http", "$log", "APP_CONST",
         function ($http, $log, APP_CONST) {
             var self = this;
 
