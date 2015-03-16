@@ -21,7 +21,9 @@
     <link rel="stylesheet" href="bower_components/bootswatch-dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css"/>
     <!--Application CSS-->
+    <!--build:css css/oauthapp.css-->
     <link rel="stylesheet" href="styles/voffset.css"/>
+    <!--endbuild-->
 </head>
 <body>
 <nav class="navbar navbar-default" role="navigation">
@@ -40,16 +42,19 @@
 
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="bower_components/angular-route/angular-route.min.js"></script>
-<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/angular-touch/angular-touch.min.js"></script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
 <script src="bower_components/html5shiv/dist/html5shiv.min.js"></script>
 <script src="bower_components/respond/dest/respond.min.js"></script>
 <![endif]-->
 <!--- Application JS -->
+<!--build:js js/oauthapp.min.js-->
 <script src="js/authprovider.js"></script>
-<script src="js/base64.js"></script>
+<script src="js/lib/base64.js"></script>
 <script src="js/oauthapp.js"></script>
+
+<!--endbuild-->
 
 <!--End Application JS -->
 </html>

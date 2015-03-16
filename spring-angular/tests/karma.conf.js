@@ -32,9 +32,11 @@ module.exports = function(config){
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-jasmine',
-            'karma-junit-reporter'
-        ],
+            'karma-junit-reporter',
+            'karma-mocha-reporter'
 
+        ],
+        reporters: ['mocha'],
         junitReporter : {
             outputFile: 'test_out/unit.xml',
             suite: 'unit'

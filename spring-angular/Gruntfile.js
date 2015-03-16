@@ -13,6 +13,7 @@ module.exports = function (grunt) {
 
     var SOURCE_DIR = ['app/js/**/*.js'];
     var TEST_DIR = ['tests/**/*.js', '!tests/karma.conf.js'];
+
     /*global require */
     require('load-grunt-tasks')(grunt);
 
@@ -37,41 +38,68 @@ module.exports = function (grunt) {
         };
     }
 
-    function concat() {
-        return {
-            build: {
-                src: SOURCE_DIR,
-                dest: "build/<%=pkg.name %>.js"
-            }
-        };
-    }
 
-    function uglify() {
+    function karma() {
         return {
-            compress: {
-                src: "<%=concat.build.dest%>",
-                dest: "build/<%=pkg.name %>.min.js",
-                drop_console: true
-            },
             options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-                sourceMap: true,
-                sourceMapName: "build/<%pkg.name %>.sourcemap.map",
-                mangle: true
+                configFile: "tests/karma.conf.js"
+            },
+            unit: {
+                port: 9019,
+                background: true
+            },
+            continuous: {
+                singleRun: true
             }
+        };
 
+    }
+
+    function useMinPrepare() {
+        return {
+            html: "app/index.html",
+            options: {
+                dest: "dist/"
+            }
+        };
+
+    }
+
+    function useMin() {
+        return {
+            html: "dist/index.html"
         };
     }
 
+    function copyIndex() {
+        return {
+            copyIndex: {
+                files: [
+                    {
+                        expand: 'true',
+                        cwd: "app",
+                        src: '**',
+                        dest: 'dist/'
+                    }
+                ]
+            }
+        };
+    }
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         jshint: jshint(),
-        concat: concat(),
-        uglify: uglify(),
+        karma: karma(),
+        useminPrepare: useMinPrepare(),
         watch: {
             files: lintableFolders(),
-            tasks: ["jshint", "concat", "uglify"]
-        }
+            tasks: ["jshint", "karma"]
+        },
+        usemin: useMin(),
+        copy: copyIndex()
     });
+    grunt.registerTask("package", "Prepares the concat/uglified package " +
+    "with updated index.html", ["copy:copyIndex",
+        "useminPrepare",
+        "concat", "uglify", "cssmin", "usemin"]);
 };
